@@ -4,3 +4,4 @@ venv
 .env
 .pyenv
 __pycache__
+db.sqlite3
