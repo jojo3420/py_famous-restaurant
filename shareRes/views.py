@@ -1,11 +1,17 @@
 from django.shortcuts import render
 from django.views import View
 from django.http import HttpResponse, HttpResponseRedirect
+from django.urls import reverse
+from .models import Category
 
 
 # Create your views here.
 def index(request):
-    return render(request, 'shareRes/index.html')
+    categories = Category.objects.all()
+    data = {
+        'categories': categories,
+    }
+    return render(request, 'shareRes/index.html', data)
 
 
 def detail_page(request):
@@ -27,7 +33,31 @@ class RestaurantView(View):
 
 class CategoryView(View):
     def get(self, request):
-        return render(request, 'shareRes/new_category.html')
+        categories = Category.objects.all()
+        data = {'categories': categories}
+        return render(request, 'shareRes/new_category.html', data)
 
     def post(self, request):
-        return HttpResponse('Category post response')
+        try:
+            id = request.POST['id']
+            if id:
+                return self.remove(request, id)
+        except KeyError:
+            pass
+
+        label = request.POST['categoryName']
+        category = Category(label=label)
+        category.save()
+        return HttpResponseRedirect(reverse('category'))
+
+    def remove(self, _request, id):
+        category = Category.objects.get(id=id)
+        if category:
+            category.delete()
+        return HttpResponseRedirect(reverse('category'))
+
+    # def delete(self, request):
+    #     return HttpResponse('delete request')
+    #
+    # def put(self, request):
+    #     return HttpResponse('put request')
