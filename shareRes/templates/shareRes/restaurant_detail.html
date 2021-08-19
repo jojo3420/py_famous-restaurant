@@ -11,112 +11,129 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 
     <style>
-        .container{
+        .container {
             margin-top: 20px;
         }
-        .jumbotron{
-            padding-top:15px;
-            padding-bottom:15px;
+
+        .jumbotron {
+            padding-top: 15px;
+            padding-bottom: 15px;
         }
-        .content{
+
+        .content {
             min-height: 60%;
             margin: auto;
         }
-        .row{
-            margin:0;
-            padding:0;
+
+        .row {
+            margin: 0;
+            padding: 0;
         }
-        .inputDiv{
+
+        .inputDiv {
             margin-left: 200px;
             margin-right: 200px;
             margin-bottom: 50px;
         }
-        select[size]{
+
+        select[size] {
             height: 28px;
         }
-        .resCategory{
-            width:300px;
+
+        .resCategory {
+            width: 300px;
             border-radius: 10px;
         }
-        .input-group{
-            margin:10px;
+
+        .input-group {
+            margin: 10px;
             width: 730px;
         }
-        .resAddBtn{
-            float:right;
+
+        .resAddBtn {
+            float: right;
         }
 
-        .panel-footer{
+        .panel-footer {
             margin-top: 50px;
             height: 10%;
         }
     </style>
     <script
-        src="https://code.jquery.com/jquery-3.4.1.js"
-        integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
-        crossorigin="anonymous">
+            src="https://code.jquery.com/jquery-3.4.1.js"
+            integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+            crossorigin="anonymous">
     </script>
     <title>맛집 추가하기</title>
     <script>
-        function checkFrom(){
-            if ($('#resTitle').val().length <= 0){
+        function checkFrom() {
+            if ($('#title').val().length <= 0) {
                 alert("맛집 이름을 입력해주세요.")
-                $('#resTitle').focus()
+                $('#title').focus()
                 return false
-            }else if($('#resLink').val().length <= 0){
+            } else if ($('#link').val().length <= 0) {
                 alert("관련 링크를 입력해주세요.")
-                $('#resLink').focus()
+                $('#link').focus()
                 return false
-            }else if($('#resContent').val().length <= 0){
+            } else if ($('#content').val().length <= 0) {
                 alert("상세 내용을 입력해주세요.")
-                $('#resContent').focus()
+                $('#content').focus()
                 return false
-            }else if($('#resLoc').val().length <= 0){
+            } else if ($('#keyword').val().length <= 0) {
                 alert("장소 키워드를 입력해주세요.")
-                $('#resLoc').focus()
+                $('#keyword').focus()
                 return false
-            }else{
+            } else {
                 return true
             }
         }
     </script>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <div class="jumbotron">
-                <h1>맛집 상세보기</h1>
-                <p>made by Django</p>
-            </div>
-        </div>
-        <div class="content">
-            <div class="inputDiv">
-                <div class="input-group">
-                    <span class="input-group-addon" id="sizing-addon2">카테고리</span>
-                    <input id="resCategory" name="resCategory" type="text" class="form-control" disabled value="">
-                </div>
-                <div class="input-group">
-                    <span class="input-group-addon" id="sizing-addon2">맛집 이름</span>
-                    <input id="resTitle" name="resTitle" type="text" class="form-control" disabled value="">
-                </div>
-                <div class="input-group">
-                    <span class="input-group-addon" id="sizing-addon2">관련 링크</span>
-                    <input id="resLink" name="resLink" type="text" class="form-control" disabled value="">
-                </div>
-                <div class="input-group">
-                    <span class="input-group-addon" id="sizing-addon2">상세 내용</span>
-                    <textarea id="resContent" name="resContent" cols="90" rows="10" disabled value=""></textarea>
-                </div>
-                <div class="input-group">
-                    <span class="input-group-addon" id="sizing-addon2">장소 키워드</span>
-                    <input id="resLoc" name="resLoc" type="text" class="form-control" disabled value="">
-                </div>
-                <a href ="/" class="resAddBtn btn btn-info" role="button">홈으로</a>
-            </div>
-        </div>
-        <div class="panel-footer">
-            실전예제로 배우는 Django. Project2-RestaurantShare
+<div class="container">
+    <div class="header">
+        <div class="jumbotron">
+            <h1>맛집 상세보기</h1>
+            <p>made by Django</p>
         </div>
     </div>
+    <div class="content">
+        <div class="inputDiv">
+            <div class="input-group">
+                <span class="input-group-addon">카테고리</span>
+                <input id="resCategory" type="text" name="resCategory" class="form-control" disabled
+                       value="{{restaurant.category.label}}">
+            </div>
+            <div class="input-group">
+                <span class="input-group-addon">맛집 이름</span>
+                <input id="title" type="text" name="title" class="form-control" disabled
+                       value="{{restaurant.name}}">
+            </div>
+            <div class="input-group">
+                <span class="input-group-addon">관련 링크</span>
+                <input id="link" type="text" name="link" class="form-control" disabled
+                       value="{{ restaurant.link }}">
+            </div>
+            <div class="input-group">
+                <span class="input-group-addon">상세 내용</span>
+                <textarea id="content" name="content" cols="90" rows="10"
+                          disabled>{{ restaurant.content }}</textarea>
+            </div>
+            <div class="input-group">
+                <span class="input-group-addon">장소 키워드</span>
+                <input id="keyword" type="text" name="keyword" class="form-control" disabled
+                       value="{{ restaurant.keyword }}">
+            </div>
+            <a href="/" class="resAddBtn btn btn-info" role="button">홈으로</a>
+<!--            <a href="/detail/" class="resAddBtn btn btn-warning" role="button">수정하기</a>-->
+<!--            <form action="/detail/{{resta}}" method="POST"> {% csrf_token %}-->
+<!--                <button class="resAddBtn btn btn-danger" role="button">삭제하기</button>-->
+<!--            </form>-->
+        </div>
+    </div>
+    <div class="panel-footer">
+        실전예제로 배우는 Django. Project2-RestaurantShare
+    </div>
+</div>
 </body>
 </html>
