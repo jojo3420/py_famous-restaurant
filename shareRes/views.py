@@ -33,8 +33,9 @@ class RestaurantView(View):
 
 class CategoryView(View):
     def get(self, request):
-        categories = Category.objects.all()
-        data = {'categories': categories}
+        basic_category = Category.objects.filter(label='기본 그룹')
+        categories = Category.objects.exclude(label='기본 그룹')
+        data = {'basic_category': basic_category, 'categories': categories}
         return render(request, 'shareRes/new_category.html', data)
 
     def post(self, request):

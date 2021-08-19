@@ -88,7 +88,9 @@
     <div class="content">
         <div class="inputDiv">
             <div class="input-group">
-                <span class="input-group-addon" style="border:1px solid #ccc; border-radius: 4px;">기본 그룹</span>
+                {% for basic in basic_category %}
+                    <span class="input-group-addon" style="border:1px solid #ccc; border-radius: 4px;">{{ basic.label }}</span>
+                {% endfor %}
             </div>
             {% for category in categories %}
             <form action="/category/" method="POST">{% csrf_token %}
