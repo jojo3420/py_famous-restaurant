@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.utils.datastructures import MultiValueDictKeyError
 from django.views import View
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, QueryDict
 from django.urls import reverse
 from .models import Category, Restaurant
 
@@ -22,26 +22,54 @@ def index(request):
     return render(request, 'shareRes/index.html', data)
 
 
+def modify_detail(request, restaurant_id):
+    """
+    맛집(restaurant) 수정 페이지(GET)
+    :param request:
+    :param restaurant_id:
+    :return:
+    """
+    categories = Category.objects.all()
+    restaurant = Restaurant.objects.get(id=restaurant_id)
+    data = {'categories': categories, 'restaurant': restaurant}
+    return render(request, 'shareRes/modify_restaurant.html', data)
+
+
+def remove_restaurant(request):
+    """
+    맛집(restaurant) 제거
+    :param request:
+    :return:
+    """
+    restaurant_id = request.POST['restaurant_id']
+    restaurant = Restaurant.objects.get(id=restaurant_id)
+    if restaurant:
+        restaurant.delete()
+    return HttpResponseRedirect(reverse('index'))
+
+
 class RestaurantView(View):
     def get(self, request):
-        try:
-            id = request.GET['id']
-            print(f'id: {id}')
-            if id:
-                # detail page
-                return detail_page(request, id)
-        except MultiValueDictKeyError:
-            pass
+        """
+        맛집(레스토랑) 등록하기 페이지
+        :param request:
+        :return:
+        """
         categories = Category.objects.all()
         data = {'categories': categories}
         return render(request, 'shareRes/new_restaurant.html', data)
 
     def post(self, request):
-        _token, category_id, name, link, content, keyword = dict(request.POST).values()
-        print(category_id, name, link, content, keyword)
-        if category_id and name:
-            category = Category.objects.get(id=category_id[0])
-            Restaurant(name=name[0], link=link[0], content=content[0], keyword=keyword[0], category=category).save()
+        """
+        맛집(레스토랑) 신규 등록
+        :param request:
+        :return:
+        """
+        query_dict = QueryDict(request.body)
+        if query_dict:
+            category = Category.objects.get(id=query_dict['category'])
+            Restaurant(name=query_dict['name'], link=query_dict['link'], content=query_dict['content'],
+                       keyword=query_dict['keyword'], category=category).save()
 
         return HttpResponseRedirect(reverse('index'))
 
@@ -49,7 +77,7 @@ class RestaurantView(View):
 class CategoryView(View):
     def get(self, request):
         """
-        카테고리 추가 페이지
+        카테고리 등록(Register) 페이지
         :param request:
         :return:
         """
@@ -62,7 +90,6 @@ class CategoryView(View):
         """
         카테고리 신규 등록 및 카테고리 삭제
         파라미터로 id가 있을 경우 삭제, id 가없으면서 categoryName 파라미터가 있으면 신규등록
-        TODO: DELETE method 수정할 방법 찾을 때 까지 임시 적용
         :param request: id: 삭제할 카테고리 아이디
         :return:
         """
@@ -90,12 +117,6 @@ class CategoryView(View):
             category.delete()
         return HttpResponseRedirect(reverse('category'))
 
-    # def delete(self, request):
-    #     return HttpResponse('delete request')
-    #
-    # def put(self, request):
-    #     return HttpResponse('put request')
-
 
 class RestaurantDetailView(View):
     def get(self, request, restaurant_id):
@@ -105,18 +126,24 @@ class RestaurantDetailView(View):
         :param id:
         :return:
         """
-        print('restaurant_id:', restaurant_id)
         restaurant = Restaurant.objects.get(id=restaurant_id)
-        data = {
-            'restaurant': restaurant,
-        }
+        data = {'restaurant': restaurant}
         return render(request, 'shareRes/restaurant_detail.html', data)
 
-    def post(self, request):
-        return HttpResponse('detail post')
-
-    def delete(self, request):
-        return HttpResponse('detail delete')
-
-    def put(self, request):
-        return HttpResponse('detail put')
+    def post(self, request, restaurant_id):
+        """
+        맛집(Restaurant) 상세 정보 수정
+          상호명, link, 상세내용, 키워드, 카테고리 변경
+        :param request:
+        :return:
+        """
+        query_dict = QueryDict(request.body)
+        prev_restaurant = Restaurant.objects.get(id=restaurant_id)
+        if prev_restaurant:
+            prev_restaurant.name = query_dict['name']
+            prev_restaurant.link = query_dict['link']
+            prev_restaurant.content = query_dict['content']
+            prev_restaurant.keyword = query_dict['keyword']
+            prev_restaurant.category = Category.objects.get(id=query_dict['category'])
+            prev_restaurant.save()
+        return HttpResponseRedirect(reverse('detail', kwargs={'restaurant_id': restaurant_id}))

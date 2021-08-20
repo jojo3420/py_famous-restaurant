@@ -125,10 +125,11 @@
                        value="{{ restaurant.keyword }}">
             </div>
             <a href="/" class="resAddBtn btn btn-info" role="button">홈으로</a>
-<!--            <a href="/detail/" class="resAddBtn btn btn-warning" role="button">수정하기</a>-->
-<!--            <form action="/detail/{{resta}}" method="POST"> {% csrf_token %}-->
-<!--                <button class="resAddBtn btn btn-danger" role="button">삭제하기</button>-->
-<!--            </form>-->
+            <a href="/modify_detail/{{ restaurant.id }}" class="resAddBtn btn btn-warning" role="button">수정하기</a>
+            <form action="/restaurant/remove/" method="POST"> {% csrf_token %}
+                <input type="hidden" name="restaurant_id" value="{{ restaurant.id }}">
+                <button class="resAddBtn btn btn-danger" role="button">삭제하기</button>
+            </form>
         </div>
     </div>
     <div class="panel-footer">
