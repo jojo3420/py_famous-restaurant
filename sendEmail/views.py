@@ -9,15 +9,15 @@ import smtplib
 
 # Create your views here.
 
-def read_email_info() -> tuple:
-    with open('.env') as stream:
+def _read_email_info(file_path) -> tuple:
+    with open(file_path) as stream:
         lines = stream.readlines()
         return lines[0].strip(), lines[1].strip()
 
 
 def send(request):
     try:
-        from_email, from_pwd = read_email_info()
+        from_email, from_pwd = _read_email_info('.env')
         checked_restaurants = request.POST.getlist('checked_restaurants')
         if checked_restaurants:
             query_dict = QueryDict(request.body)
