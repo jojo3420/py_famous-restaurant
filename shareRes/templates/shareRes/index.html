@@ -235,7 +235,7 @@
     </div>
     <div class="content">
         <div class="row">
-            <form action="" method="POST" onsubmit="return emailCheckForm();"> {% csrf_token %}
+            <form action="/email/send/" method="POST" onsubmit="return emailCheckForm();"> {% csrf_token %}
                 <div class="restaurantInfoDiv ">
                     <div class="row">
                         <div class="infoHeaderDiv">
@@ -252,10 +252,9 @@
                             {% for restaurant in restaurants %}
                             {% if category == restaurant.category %}
                             <div class="input-group">
-                                    <span class="input-group-addon">
-                                        <input type="checkbox" name="check{{restaurant_id}}"
-                                               id="check{{restaurant.id}}"/>
-                                    </span>
+                                <span class="input-group-addon">
+                                    <input type="checkbox" name="checked_restaurants" id="check{{restaurant.id}}" value="{{restaurant.id}}"/>
+                                </span>
                                 <a href="detail/{{restaurant.id}}">
                                     <input type="text" id="res{{restaurant.id}}" name="restaurant_id"
                                            class="form-control"
@@ -279,17 +278,17 @@
 
                         <div class="emailContentHeader">
                             <h4>수신자 <span class="inputReceiverSub">콤마(,)로 구분해서 여러명에게 보낼 수 있습니다.</span></h4>
-                            <input class="inputReceiver" name="inputReceiver" id="inputReceiver" type="text"
+                            <input class="inputReceiver" name="receivers" id="inputReceiver" type="text"
                                    placeholder="수신자를 적어주세요."/><br/>
                         </div>
                         <div class="emailContentHeader">
                             <h4>제목</h4>
-                            <input class="inputTitle" name="inputTitle" id="inputTitle" type="text"
+                            <input class="inputTitle" name="title" id="inputTitle" type="text"
                                    placeholder="제목을 적어주세요."/><br/>
                         </div>
                         <div class="emailContent">
                             <h4>인사말</h4>
-                            <textarea class="inputContent" name="inputContent" id="inputContent" cols="50" rows="10"
+                            <textarea class="inputContent" name="content" id="inputContent" cols="50" rows="10"
                                       placeholder="인사말을 적어주세요."></textarea>
                         </div>
 
