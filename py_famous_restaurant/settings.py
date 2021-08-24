@@ -120,3 +120,14 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# email smtp settings
+with open('.env') as stream:
+    lines = stream.readlines()
+    from_email, pwd = lines
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    EMAIL_HOST = 'smtp.gmail.com'
+    EMAIL_USE_TLS = True
+    EMAIL_PORT = 587
+    EMAIL_HOST_USER = from_email.strip()
+    EMAIL_HOST_PASSWORD = pwd.strip()

@@ -1,3 +1,5 @@
+import traceback
+
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect, QueryDict
 from django.urls import reverse
@@ -5,6 +7,8 @@ from shareRes.models import Restaurant
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import smtplib
+from django.core.mail import EmailMessage
+from django.template.loader import render_to_string
 
 
 # Create your views here.
@@ -15,7 +19,7 @@ def _read_email_info(file_path) -> tuple:
         return lines[0].strip(), lines[1].strip()
 
 
-def send(request):
+def send_old(request):
     try:
         from_email, from_pwd = _read_email_info('.env')
         checked_restaurants = request.POST.getlist('checked_restaurants')
@@ -48,3 +52,30 @@ def send(request):
     except Exception as e:
         print(str(e))
         return HttpResponse('예외발생: ' + str(e))
+
+
+def send(request):
+    try:
+        from_email, from_pwd = _read_email_info('.env')
+        checked_restaurants = request.POST.getlist('checked_restaurants')
+        restaurants = []
+        if checked_restaurants:
+            query_dict = QueryDict(request.body)
+            for restaurant_id in checked_restaurants:
+                restaurants.append(Restaurant.objects.get(id=restaurant_id))
+            data = {
+                'content': query_dict['content'],
+                'restaurants': restaurants
+            }
+            html_str = render_to_string('sendEmail/email_format.html', data)
+            # print(html_str, type(html_str))
+            receiver_list = query_dict['receivers'].split(',')
+            email_message = EmailMessage(subject=query_dict['title'], body=html_str, from_email=from_email,
+                                         bcc=receiver_list)
+            email_message.content_subtype = 'html'
+            email_message.send()
+            return render(request, 'sendEmail/success.html')
+    except Exception as e:
+        print(str(e))
+        traceback.print_exc()
+        return render(request, 'sendEmail/failed.html')
