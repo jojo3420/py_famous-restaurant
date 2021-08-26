@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Email</title>
+</head>
+<body>
+<h1>맛집 공유</h1>
+<div>
+    <p>{{ content }}<br/>
+        발신자 님께서 공유하신 맛집은 아래와 같습니다.
+    </p>
+    {% for restaurant in restaurants %}
+    <h2>{{ restaurant.name }}</h2>
+    <h5>링크: <a href="{{restaurant.link}}">이동하기</a></h5>
+    <h5>내용: <p>{{ restaurant.content }}</p></h5>
+    <h5>키워드: <p>{{ restaurant.keyword }}</p></h5>
+    {% endfor %}
+</div>
+</body>
+</html>

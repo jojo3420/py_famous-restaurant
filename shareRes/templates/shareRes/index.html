@@ -234,7 +234,7 @@
     </div>
     <div class="content">
         <div class="row">
-            <form action="" method="POST" onsubmit="return emailCheckForm();"> {% csrf_token %}
+            <form action="/email/send/" method="POST" onsubmit="return emailCheckForm();"> {% csrf_token %}
                 <div class="restaurantInfoDiv ">
                     <div class="row">
                         <div class="infoHeaderDiv">
@@ -252,11 +252,11 @@
                             {% if restaurant.category_id == category.id %}
                             <div class="input-group">
                                 <span class="input-group-addon">
-                                    <input type="checkbox" name="restaurant_id" id="check1"
+                                    <input type="checkbox" name="checked_restaurants" id="check1"
                                            value="{{restaurant.id}}"/>
                                 </span>
                                 <a href="restaurant/{{restaurant.id}}">
-                                    <input type="text" name="restaurant_id" value="{{ restaurant.name }}" id="res1"
+                                    <input type="text" value="{{ restaurant.name }}" id="res1"
                                            class="form-control" disabled style="cursor: pointer;"/>
                                 </a>
                             </div>
@@ -272,7 +272,6 @@
                         <h1>Email <small class="subTitle">수신자와 제목,인사말을 적어주세요.</small></h1>
                     </div>
                     <div class="emailContentGroup">
-
                         <div class="emailContentHeader">
                             <h4>수신자 <span class="inputReceiverSub">콤마(,)로 구분해서 여러명에게 보낼 수 있습니다.</span></h4>
                             <input class="inputReceiver" name="receivers" id="inputReceiver" type="text"
@@ -288,7 +287,6 @@
                             <textarea class="inputContent" name="content" id="inputContent" cols="50" rows="10"
                                       placeholder="인사말을 적어주세요."></textarea>
                         </div>
-
                     </div>
                     <div>
                         <input type="submit" class="sendBtn btn btn-info" role="button" value="이메일 발송하기"/>
